@@ -1,0 +1,56 @@
+<h2>Book Form</h2>
+
+<form (ngSubmit)="onSubmit()" #bookForm="ngForm">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" [(ngModel)]="model.book.title" #title="ngModel" class="form-control"
+            required>
+        <div [hidden]="title.valid || title.pristine" class="alert alert-danger">Title is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="author">Author</label>
+        <input type="text" id="author" name="author" [(ngModel)]="model.book.author" #author="ngModel"
+            class="form-control" required>
+        <div [hidden]="author.valid || author.pristine" class="alert alert-danger">Author is required</div>
+    </div>
+
+    <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category" [(ngModel)]="model.book.category" #category="ngModel" class="form-control"
+            required (change)="categoryChanged(category.value)">
+            <option value="" disabled selected>Select a category</option>
+            <option *ngFor="let category of model.categories" [value]="category.id">{{ category.name }}</option>
+        </select>
+        <div [hidden]="category.valid || category.pristine" class="alert alert-danger">Category is required</div>
+    </div>
+
+    <div class="form-group">
+        <label class="fw-bold my-3">Subcategories for '{{model.book.title}}', based on {{selectedCategory.name}}:</label>
+        <div *ngFor="let sc of model.book.subcategories">
+            <div class="input-group my-2">
+                <input [(ngModel)]="sc.name" [name]="'scName-' + sc.id" required #name="ngModel" class="form-control">
+                <button type="button" class="btn btn-danger btn-sm " (click)="removeSubCategory(sc)">-</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-outline-warning" (click)="addSubcategory()">Add subcategory</button>
+    </div>
+
+    <button type="submit" [disabled]="!bookForm.valid" class="btn btn-success my-3 mr-3">Save</button>
+    <button type="button" (click)="newBook()" class="btn btn-primary my-3 mx-3">New book</button>
+
+    <div class="mb-3">
+        <b>Form Status Flags:</b>
+        {{ bookForm.status }},
+        {{ bookForm.touched ? 'touched' : 'untouched'}},
+        {{ bookForm.dirty ? 'dirty' : 'pristine'}}
+    </div>
+
+    <hr>
+    <h5><b>Model Peek</b></h5>
+    <p>Book: </p><code>{{ model.book | json }}</code>
+    <br><br>
+    <p>Subcategories: </p><code>{{ model.subCategories | json }}</code>
+</form>
